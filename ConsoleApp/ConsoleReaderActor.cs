@@ -19,20 +19,16 @@ namespace ConsoleApp
         }
         protected override void OnReceive(object message)
         {
-            var read = Console.ReadLine();
-            if (!string.IsNullOrEmpty(read) && String.Equals(read, ExitCommand, StringComparison.OrdinalIgnoreCase))
+            if (message.Equals(StartCommand))
             {
-                // shut down the system (acquire handle to system via
-                // this actors context)
-                Context.System.Terminate();
-                return;
+                DoPrintInstructions();
+            }
+            else if (message is Messages.InputError)
+            {
+                _consoleWriterActor.Tell(message as Messages.InputError);
             }
 
-            // send input to the console writer to process and print
-            _consoleWriterActor.Tell(read);
-
-            // continue reading messages from the console
-            Self.Tell("continue");
+            GetAndValidateInput();
         }
 
         #region Internal methods
@@ -67,8 +63,8 @@ namespace ConsoleApp
                 if (valid)
                 {
                     _consoleWriterActor.Tell(new Messages.InputSuccess("Thank you! Message was valid."));
-        
-            // continue reading messages from console
+
+                    // continue reading messages from console
                     Self.Tell(new Messages.ContinueProcessing());
                 }
                 else

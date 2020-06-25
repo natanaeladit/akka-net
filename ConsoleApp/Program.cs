@@ -11,7 +11,7 @@ namespace ConsoleApp
         {
             MyActorSystem = ActorSystem.Create("MyActorSystem");
 
-            PrintInstructions();
+            //PrintInstructions();
 
             var consoleWriterActor = MyActorSystem.ActorOf(Props.Create(() => new ConsoleWriterActor()));
             var consoleReaderActor = MyActorSystem.ActorOf(Props.Create(() => new ConsoleReaderActor(consoleWriterActor)));
